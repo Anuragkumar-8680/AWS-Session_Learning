@@ -1,72 +1,105 @@
-# Deploying a Node Js Application on AWS EC2
+# AWS EC2 Deployment — Kubesimplify Live Workshop
 
-### Testing the project locally
+> ⚠️ This is a forked repository from Kubesimplify.
+> Original project & application code credit goes to 
+> Kunal Verma & the Kubesimplify team.
+> I did NOT build the application — I deployed it.
+> 🔗 Workshop: https://www.youtube.com/watch?v=NLmF64KdLN0
 
-1. Clone this project
-```
-git clone https://github.com/verma-kunal/AWS-Session.git
-```
-2. Setup the following environment variables - `(.env)` file
-```
-DOMAIN= ""
-PORT=3000
-STATIC_DIR="./client"
+## 📌 About
+This project was completed as part of the **Kubesimplify Live Workshop**
+on deploying and exposing a Node.js app to AWS EC2.
+I followed along with the workshop to get real hands-on experience
+with cloud deployment — not just theory.
 
-PUBLISHABLE_KEY=""
-SECRET_KEY=""
-```
-3. Initialise and start the project
-```
-npm install
-npm run start
-```
+> The website, application code, and original README
+> were built by Kunal Verma (@verma-kunal).
+> My contribution was purely the deployment process.
 
-### Set up an AWS EC2 instance
+## 🛠 What I Did (Deployment Steps)
 
-1. Create an IAM user & login to your AWS Console
-    - Access Type - Password
-    - Permissions - Admin
-2. Create an EC2 instance
-    - Select an OS image - Ubuntu
-    - Create a new key pair & download `.pem` file
-    - Instance type - t2.micro
-3. Connecting to the instance using ssh
-```
-ssh -i instance.pem ubunutu@<IP_ADDRESS>
-```
+### 1. AWS Setup
+- Created an **IAM user** with admin permissions
+- Launched an **EC2 instance** (Ubuntu, t2.micro)
+- Created and downloaded a new **.pem key pair**
+- Configured **security group inbound rules** to allow traffic on port 3000
 
-### Configuring Ubuntu on remote VM
+### 2. SSH into EC2
+Connected to the remote EC2 instance using Git Bash on Windows:
+ssh -i "D:\Devops\EC2_Project.pem" ubuntu@<EC2-PUBLIC-IP>
 
-1. Updating the outdated packages and dependencies
-```
+### 3. Configuring Ubuntu on EC2
+Updated packages and installed dependencies:
 sudo apt update
-```
-3. Install Git - [Guide by DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-install-git-on-ubuntu-22-04) 
-4. Configure Node.js and `npm` - [Guide by DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-22-04)
+- Installed **Git** on the remote VM
+- Configured **Node.js and npm** on the remote VM
 
-### Deploying the project on AWS
+### 4. Editing Files on EC2
+Used **nano** (via Git Bash terminal) to edit files directly on the EC2 instance:
+nano .env
+nano server.js
 
-1. Clone this project in the remote VM
-```
-git clone https://github.com/verma-kunal/AWS-Session.git
-```
-2. Setup the following environment variables - `(.env)` file
-```
-DOMAIN= ""
+### 5. Environment Variables Setup
+Created a `.env` file on the EC2 instance:
+DOMAIN="http://<EC2-PUBLIC-IP>:3000"
 PORT=3000
 STATIC_DIR="./client"
-
 PUBLISHABLE_KEY=""
 SECRET_KEY=""
-```
-> For this project, we'll have to set up an [Elastic IP Address](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html) for our EC2 & that would be our `DOMAIN`
 
-3. Initialise and start the project
-```
+### 6. Code Fix — server.js
+Modified `server.js` to bind the server to `0.0.0.0`
+so the app is accessible via EC2 public IP:
+
+Before:
+app.listen(port, () => {
+After:
+app.listen(port, '0.0.0.0', () => {
+> Without this fix the app only runs on localhost
+> and is NOT accessible from the public internet
+> even with correct inbound rules.
+
+### 7. Deploying the Project
+git clone https://github.com/verma-kunal/AWS-Session.git
 npm install
 npm run start
-```
 
-> NOTE - We will have to edit the **inbound rules** in the security group of our EC2, in order to allow traffic from our particular port
+### 8. Fixing npm Vulnerabilities
+Resolved 3 high severity vulnerabilities in nodemon:
+npm install nodemon@latest --save-dev
+Result: 0 vulnerabilities ✅
 
-### Project is deployed on AWS 🎉
+## 💻 Tech Stack Used
+- AWS EC2 (Ubuntu)
+- Node.js & Express
+- Stripe Payment Gateway
+- dotenv
+- nodemon
+- Git Bash (Windows SSH & file editing)
+- nano (file editing on EC2)
+
+## 🔧 How to Run Locally
+1. Clone the repo
+git clone https://github.com/Anuragkumar-8680/AWS-Sesssion_Learning.git
+2. Install dependencies
+npm install
+3. Create a `.env` file
+DOMAIN="http://localhost:3000"
+PORT=3000
+STATIC_DIR="./client"
+PUBLISHABLE_KEY=your_stripe_publishable_key
+SECRET_KEY=your_stripe_secret_key
+4. Start the server
+npm run start
+5. Open in browser
+http://localhost:3000
+
+## 📸 Preview
+[Add screenshot of running app here]
+
+## 🎓 Credit
+- Original application & code by **Kunal Verma**
+- GitHub: https://github.com/verma-kunal/AWS-Session
+- Workshop by **Kubesimplify**
+- YouTube: https://www.youtube.com/watch?v=NLmF64KdLN0
+- Channel: https://www.youtube.com/@kubesimplify
