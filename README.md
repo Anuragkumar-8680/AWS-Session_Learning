@@ -94,9 +94,6 @@ npm run start
 5. Open in browser
 http://localhost:3000
 
-## 📸 Preview
-[Add screenshot of running app here]
-
 ## 🎓 Credit
 - Original application & code by **Kunal Verma**
 - GitHub: https://github.com/verma-kunal/AWS-Session
